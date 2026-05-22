@@ -10,7 +10,6 @@
 
   .top-header{display:flex;align-items:center;gap:8px;margin-bottom:20px}
   .top-header h1{font-size:19px;font-weight:600;color:#fff}
-  .icon-fork{font-size:22px}
 
   .card{background:#1a1a1a;border-radius:14px;padding:16px;margin-bottom:12px}
   .step-label{font-size:14px;font-weight:600;color:#fff;margin-bottom:12px}
@@ -20,23 +19,25 @@
   .grp-btn{background:#2a2a2a;border:none;color:#aaa;border-radius:9px;padding:11px 0;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:background 0.12s,color 0.12s;width:100%}
   .grp-btn:active{transform:scale(0.95)}
   .grp-btn.active{background:#2ecc87;color:#0a3a25;font-weight:700}
+  .grp-btn.has-order{border:2px solid #1a6644}
 
   .menu-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
   .menu-row{background:#252525;border-radius:10px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
   .menu-name{font-size:13px;color:#ddd;flex:1;line-height:1.4}
   .qty-ctrl{display:flex;align-items:center;gap:10px;flex-shrink:0}
-  .qty-btn{width:36px;height:36px;border-radius:50%;background:#333;border:none;color:#ccc;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;transition:background 0.1s;user-select:none}
+  .qty-btn{width:36px;height:36px;border-radius:50%;background:#333;border:none;color:#ccc;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;user-select:none}
   .qty-btn:active{background:#555;transform:scale(0.92)}
   .qty-val{font-size:17px;font-weight:600;color:#fff;min-width:24px;text-align:center}
-  .qty-val.changed{color:#2ecc87}
+  .qty-val.on{color:#2ecc87}
 
-  .save-btn{width:100%;background:#2ecc87;color:#0a3a25;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.12s}
-  .save-btn:active{opacity:0.78;transform:scale(0.98)}
-  .saved-msg{font-size:12px;color:#2ecc87;text-align:center;margin-top:8px;min-height:17px;transition:opacity 0.3s}
+  .save-btn{width:100%;background:#2ecc87;color:#0a3a25;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+  .save-btn:active{opacity:0.78}
+  .save-btn:disabled{opacity:0.5;cursor:not-allowed}
+  .saved-msg{font-size:12px;color:#2ecc87;text-align:center;margin-top:8px;min-height:17px}
 
   .stat-card{background:#1a1a1a;border-radius:14px;padding:16px}
   .stat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-  .stat-title{font-size:14px;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px}
+  .stat-title{font-size:14px;font-weight:600;color:#fff}
   .live-pill{display:flex;align-items:center;gap:4px;font-size:11px;color:#2ecc87;background:#0d2e1e;border-radius:20px;padding:4px 10px;font-weight:600}
   .live-dot{width:6px;height:6px;border-radius:50%;background:#2ecc87;animation:pulse 1.5s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
@@ -44,35 +45,34 @@
   .stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #252525}
   .stat-row:last-of-type{border-bottom:none}
   .stat-mname{font-size:13px;color:#bbb}
-  .stat-cnt{font-size:13px;color:#aaa}
   .stat-cnt b{color:#fff;font-weight:600}
+  .stat-cnt{font-size:13px;color:#aaa}
 
   .total-box{background:#2ecc87;border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:14px}
   .total-label{font-size:13px;color:#0a3a25;font-weight:600}
   .total-val{font-size:26px;font-weight:700;color:#0a3a25}
 
-  .group-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
-  .grp-badge{font-size:11px;background:#252525;color:#888;border-radius:6px;padding:3px 8px}
-  .grp-badge.has-order{background:#0d2e1e;color:#2ecc87}
+  .connecting{text-align:center;padding:12px;font-size:13px;color:#888}
 </style>
 </head>
 <body>
 
 <div class="top-header">
-  <span class="icon-fork">🍽️</span>
+  <span style="font-size:22px">🍽️</span>
   <h1>식사 메뉴 취합</h1>
 </div>
 
 <div class="card">
   <div class="step-label">1. 몇 <span class="hl">조</span>인가요?</div>
   <div class="grp-grid" id="grp-grid"></div>
-  <div class="group-badges" id="grp-badges"></div>
 </div>
 
 <div class="card">
   <div class="step-label">2. <span class="hl" id="cur-grp-label">1조</span> 주문 수량 입력</div>
-  <div class="menu-list" id="menu-list"></div>
-  <button class="save-btn" onclick="saveGroup()">저장</button>
+  <div class="menu-list" id="menu-list">
+    <div class="connecting">🔥 Firebase 연결 중...</div>
+  </div>
+  <button class="save-btn" id="save-btn" onclick="saveGroup()" disabled>저장</button>
   <div class="saved-msg" id="saved-msg"></div>
 </div>
 
@@ -81,31 +81,44 @@
     <span class="stat-title">📊 전체 주문 통계</span>
     <span class="live-pill"><span class="live-dot"></span>LIVE</span>
   </div>
-  <div id="stat-list"></div>
+  <div id="stat-list"><div class="connecting">불러오는 중...</div></div>
   <div class="total-box">
     <span class="total-label">총 주문 수량</span>
-    <span class="total-val" id="total-val">0개</span>
+    <span class="total-val" id="total-val">-</span>
   </div>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBa3_1FDZskClJ7xxDR7P7_MnQdtMPW-RA",
+  authDomain: "meal-order-58023.firebaseapp.com",
+  databaseURL: "https://meal-order-58023-default-rtdb.firebaseio.com",
+  projectId: "meal-order-58023",
+  storageBucket: "meal-order-58023.firebasestorage.app",
+  messagingSenderId: "783738903277",
+  appId: "1:783738903277:web:a3785fa9b471b4d9ce4ae4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 const MENUS = ["한우육회 비빔밥","한우불고기 비빔밥","한우차돌깍두기 볶음밥","진한 한우& 된장찌개 솥밥","갈비탕","비빔냉면","물냉면"];
 const GROUPS = 10;
-const KEY = "mealOrderData_v2";
 
-let data = {};
-try { const r = localStorage.getItem(KEY); if (r) data = JSON.parse(r); } catch(e) {}
+let allData = {};
 for (let g = 1; g <= GROUPS; g++) {
-  if (!data[g]) data[g] = {};
-  MENUS.forEach(m => { if (data[g][m] === undefined) data[g][m] = 0; });
+  allData[g] = {};
+  MENUS.forEach(m => { allData[g][m] = 0; });
 }
 
 let cur = 1;
+let loaded = false;
 
-function persist() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e) {} }
-
+// 조 버튼 생성
 const gg = document.getElementById("grp-grid");
-const gb = document.getElementById("grp-badges");
 for (let g = 1; g <= GROUPS; g++) {
   const b = document.createElement("button");
   b.className = "grp-btn" + (g === 1 ? " active" : "");
@@ -113,12 +126,6 @@ for (let g = 1; g <= GROUPS; g++) {
   b.textContent = g + "조";
   b.onclick = () => selGroup(g);
   gg.appendChild(b);
-
-  const badge = document.createElement("span");
-  badge.className = "grp-badge";
-  badge.id = "badge-" + g;
-  badge.textContent = g + "조";
-  gb.appendChild(badge);
 }
 
 function selGroup(g) {
@@ -135,48 +142,63 @@ function renderMenus() {
   list.innerHTML = "";
   MENUS.forEach(m => {
     const id = "q-" + encodeURIComponent(m);
-    const v = data[cur][m];
+    const v = (allData[cur] && allData[cur][m]) ? allData[cur][m] : 0;
     const row = document.createElement("div");
     row.className = "menu-row";
-    row.innerHTML = `<span class="menu-name">${m}</span>
+    row.innerHTML = `
+      <span class="menu-name">${m}</span>
       <div class="qty-ctrl">
-        <button class="qty-btn" onclick="chg('${m}',-1)">−</button>
-        <span class="qty-val${v > 0 ? ' changed' : ''}" id="${id}">${v}</span>
-        <button class="qty-btn" onclick="chg('${m}',1)">+</button>
+        <button class="qty-btn" onclick="window._chg('${m}',-1)">−</button>
+        <span class="qty-val${v > 0 ? ' on' : ''}" id="${id}">${v}</span>
+        <button class="qty-btn" onclick="window._chg('${m}',1)">+</button>
       </div>`;
     list.appendChild(row);
   });
 }
 
-function chg(m, d) {
-  data[cur][m] = Math.max(0, (data[cur][m] || 0) + d);
+window._chg = function(m, d) {
+  if (!allData[cur]) allData[cur] = {};
+  allData[cur][m] = Math.max(0, (allData[cur][m] || 0) + d);
   const el = document.getElementById("q-" + encodeURIComponent(m));
-  el.textContent = data[cur][m];
-  el.className = "qty-val" + (data[cur][m] > 0 ? " changed" : "");
-  renderStats();
-  updateBadges();
-}
+  if (el) {
+    el.textContent = allData[cur][m];
+    el.className = "qty-val" + (allData[cur][m] > 0 ? " on" : "");
+  }
+};
 
-function saveGroup() {
-  persist();
-  updateBadges();
-  const msg = document.getElementById("saved-msg");
-  msg.textContent = cur + "조 저장 완료 ✓";
-  setTimeout(() => { msg.textContent = ""; }, 2500);
-}
+window.saveGroup = async function() {
+  const btn = document.getElementById("save-btn");
+  btn.disabled = true;
+  btn.textContent = "저장 중...";
+  try {
+    await set(ref(db, "orders/group_" + cur), allData[cur]);
+    const msg = document.getElementById("saved-msg");
+    msg.textContent = cur + "조 저장 완료 ✓ (전체 반영됨)";
+    setTimeout(() => { msg.textContent = ""; }, 3000);
+    updateGroupBadges();
+  } catch(e) {
+    document.getElementById("saved-msg").textContent = "저장 실패 😢 다시 시도해주세요";
+  }
+  btn.disabled = false;
+  btn.textContent = "저장";
+};
 
-function updateBadges() {
+function updateGroupBadges() {
   for (let g = 1; g <= GROUPS; g++) {
-    const total = MENUS.reduce((s, m) => s + (data[g][m] || 0), 0);
-    const el = document.getElementById("badge-" + g);
-    el.className = "grp-badge" + (total > 0 ? " has-order" : "");
+    const btn = document.getElementById("gb-" + g);
+    if (!btn) continue;
+    const total = MENUS.reduce((s, m) => s + ((allData[g] && allData[g][m]) ? allData[g][m] : 0), 0);
+    if (total > 0) btn.classList.add("has-order");
+    else btn.classList.remove("has-order");
   }
 }
 
 function renderStats() {
   const tot = {};
   MENUS.forEach(m => { tot[m] = 0; });
-  for (let g = 1; g <= GROUPS; g++) MENUS.forEach(m => { tot[m] += (data[g][m] || 0); });
+  for (let g = 1; g <= GROUPS; g++) {
+    MENUS.forEach(m => { tot[m] += (allData[g] && allData[g][m]) ? allData[g][m] : 0; });
+  }
   const sl = document.getElementById("stat-list");
   sl.innerHTML = "";
   let grand = 0;
@@ -190,9 +212,24 @@ function renderStats() {
   document.getElementById("total-val").textContent = grand + "개";
 }
 
-renderMenus();
-renderStats();
-updateBadges();
+// Firebase 실시간 구독
+onValue(ref(db, "orders"), (snapshot) => {
+  const raw = snapshot.val() || {};
+  for (let g = 1; g <= GROUPS; g++) {
+    const key = "group_" + g;
+    if (raw[key]) {
+      allData[g] = {};
+      MENUS.forEach(m => { allData[g][m] = raw[key][m] || 0; });
+    }
+  }
+  if (!loaded) {
+    loaded = true;
+    document.getElementById("save-btn").disabled = false;
+  }
+  renderMenus();
+  renderStats();
+  updateGroupBadges();
+});
 </script>
 </body>
 </html>
